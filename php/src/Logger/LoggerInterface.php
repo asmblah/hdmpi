@@ -14,6 +14,8 @@ namespace Asmblah\Hdmpi\Logger;
 /**
  * Interface LoggerInterface.
  *
+ * TODO: Replace with PSR logger interface.
+ *
  * @author Dan Phillimore <dan@ovms.co>
  */
 interface LoggerInterface

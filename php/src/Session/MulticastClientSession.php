@@ -12,7 +12,6 @@
 namespace Asmblah\Hdmpi\Session;
 
 use Asmblah\Hdmpi\Logger\LoggerInterface;
-use SplQueue;
 
 /**
  * Class MulticastClientSession.
@@ -87,56 +86,29 @@ class MulticastClientSession implements SessionInterface
 
         $localHost = $this->localHost;
         $multicastGroup = $this->multicastGroup;
-        $maxMessageBacklog = $this->maxMessageBacklog;
-        $receiveBufferSizeBytes = $this->receiveBufferSizeBytes;
-        $messageQueue = new SplQueue();
         $busy = false;
 
         $nativeUdp4Socket->on('listening', function () use (
             $localHost,
             $logger,
             $multicastGroup,
-            $nativeUdp4Socket,
-            $receiveBufferSizeBytes
+            $nativeUdp4Socket
         ) {
             $address = $nativeUdp4Socket->address();
 
-//            $nativeUdp4Socket->setBroadcast(true);
             $nativeUdp4Socket->setMulticastTTL(128);
-            $nativeUdp4Socket->addMembership(/*'192.168.168.55', */$multicastGroup, $localHost);
+            $nativeUdp4Socket->addMembership($multicastGroup, $localHost);
 
             $logger->info(
                 'UDP Client listening on ' . $address['address'] . ':' . $address['port'] . ', multicast group ' . $multicastGroup
             );
-
-//            $nativeUdp4Socket->setRecvBufferSize($receiveBufferSizeBytes);
-//            $actualReceiveBufferSizeBytes = $nativeUdp4Socket->getRecvBufferSize();
-//
-//            if ($actualReceiveBufferSizeBytes < $receiveBufferSizeBytes) {
-//                // For when "net.core.rmem_default" and "net.core.rmem_max" are set too low.
-//                $logger->error(
-//                    sprintf(
-//                        'Failed to resize receive buffer, target %d bytes, actual %d bytes',
-//                        $receiveBufferSizeBytes,
-//                        $actualReceiveBufferSizeBytes
-//                    )
-//                );
-//            }
-//
-//            $logger->info('Receive buffer size: ' . $nativeUdp4Socket->getRecvBufferSize() . ' bytes');
         });
 
         $nativeUdp4Socket->on('message', function ($message, $remoteInfo) use (
             &$busy,
-            $logger,
-            $maxMessageBacklog,
-            $messageQueue,
             $onPacket
         ) {
-            // NB: This function will return a Promise to JS-land.
-
             if ($busy) {
-//                $logger->debug('Busy, discarding chunk');
                 return;
             }
 
@@ -156,132 +128,4 @@ class MulticastClientSession implements SessionInterface
          */
         $nativeUdp4Socket->bind($this->port, $this->multicastGroup);
     }
-
-    // /**
-    //     * @inheritDoc
-    //     */
-    //    public function capture(callable $onPacket)
-    //    {
-    //        $logger = $this->logger;
-    //        $nativeUdp4Socket = $this->nativeUdp4Socket;
-    //
-    //        $localHost = $this->localHost;
-    //        $multicastGroup = $this->multicastGroup;
-    //        $maxMessageBacklog = $this->maxMessageBacklog;
-    //        $receiveBufferSizeBytes = $this->receiveBufferSizeBytes;
-    //        $messageQueue = new SplQueue();
-    //        $busy = false;
-    //
-    //        $nativeUdp4Socket->on('listening', function () use (
-    //            $localHost,
-    //            $logger,
-    //            $multicastGroup,
-    //            $nativeUdp4Socket,
-    //            $receiveBufferSizeBytes
-    //        ) {
-    //            $address = $nativeUdp4Socket->address();
-    //
-    ////            $nativeUdp4Socket->setBroadcast(true);
-    //            $nativeUdp4Socket->setMulticastTTL(128);
-    //            $nativeUdp4Socket->addMembership(/*'192.168.168.55', */$multicastGroup, $localHost);
-    //
-    //            $logger->info(
-    //                'UDP Client listening on ' . $address['address'] . ':' . $address['port'] . ', multicast group ' . $multicastGroup
-    //            );
-    //
-    //            $nativeUdp4Socket->setRecvBufferSize($receiveBufferSizeBytes);
-    //            $actualReceiveBufferSizeBytes = $nativeUdp4Socket->getRecvBufferSize();
-    //
-    //            if ($actualReceiveBufferSizeBytes < $receiveBufferSizeBytes) {
-    //                // For when "net.core.rmem_default" and "net.core.rmem_max" are set too low.
-    //                $logger->error(
-    //                    sprintf(
-    //                        'Failed to resize receive buffer, target %d bytes, actual %d bytes',
-    //                        $receiveBufferSizeBytes,
-    //                        $actualReceiveBufferSizeBytes
-    //                    )
-    //                );
-    //            }
-    //
-    //            $logger->info('Receive buffer size: ' . $nativeUdp4Socket->getRecvBufferSize() . ' bytes');
-    //        });
-    //
-    //        $nativeUdp4Socket->on('message', function ($message, $remoteInfo) use (
-    //            &$busy,
-    //            $logger,
-    //            $maxMessageBacklog,
-    //            $messageQueue,
-    //            $onPacket
-    //        ) {
-    //            // NB: This function will return a Promise to JS-land.
-    //
-    //            if ($busy) {
-    //                $messageQueue->enqueue(['message' => $message, 'remoteInfo' => $remoteInfo]);
-    //
-    //                $messageCount = count($messageQueue);
-    //
-    //                if ($messageCount > $maxMessageBacklog) {
-    ////                    $logger->debug('Backlog full, discarding oldest queued message');
-    //
-    //                    $messageQueue->dequeue();
-    //                } else {
-    ////                    $logger->debug('Queued message, count is now: ' . $messageCount);
-    //                }
-    //
-    //                return;
-    //            }
-    //
-    //            $busy = true;
-    //            $onPacket($message, $remoteInfo);
-    //
-    //            while (!$messageQueue->isEmpty()) {
-    //                $queuedMessage = $messageQueue->dequeue();
-    //
-    //                $onPacket($queuedMessage['message'], $queuedMessage['remoteInfo']);
-    //            }
-    //
-    //            $busy = false;
-    //
-    //
-    //
-    ////            $messageQueue->enqueue(['message' => $message, 'remoteInfo' => $remoteInfo]);
-    ////
-    ////            $messageCount = count($messageQueue);
-    ////
-    ////            if ($messageCount > $maxMessageBacklog) {
-    ////                $logger->error/*debug*/('Backlog full, discarding oldest queued message');
-    ////
-    ////                $messageQueue->dequeue();
-    ////            } else {
-    ////                $logger->debug('Queued message, count is now: ' . $messageCount);
-    ////            }
-    //        });
-    //
-    //        $nativeUdp4Socket->on('error', function ($error) use ($logger) {
-    //            $logger->error('UDP socket error: ' . $error);
-    //        });
-    //
-    //        /*
-    //         * Note that different to documentation in various places, the host here must be
-    //         * the multicast group and not the local host
-    //         * (thanks to https://stackoverflow.com/questions/45044189/node-js-multicast-client).
-    //         */
-    //        $nativeUdp4Socket->bind($this->port, $this->multicastGroup);
-    //
-    ////        while (true) {
-    ////            if ($messageQueue->isEmpty()) {
-    ////                usleep(1 * 1000);
-    ////                continue;
-    ////            }
-    ////
-    ////            // TODO: Keep a count of # msgs processed sync/sequentially,
-    ////            //       and sleep if it exceeds a max to avoid hogging CPU & blocking event loop?
-    ////
-    ////            $this->logger->debug('Ready for packet');
-    ////
-    ////            $message = $messageQueue->dequeue();
-    ////
-    ////            $onPacket($message['message'], $message['remoteInfo']);
-    ////        }
-    //    }
 }

@@ -61,7 +61,6 @@ class AudioCapturer implements CapturerInterface
         $audioBuffer = $this->bufferClass->alloc(992, 0);
 
         $this->session->capture(function ($message) use ($audioBuffer) {
-//            $audioChunk = $this->bufferClass->from($message->subarray(4));
             $message->copy($audioBuffer, 0, 16);
 
             $this->fifo->writeChunk($audioBuffer);

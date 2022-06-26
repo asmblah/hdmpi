@@ -87,8 +87,7 @@ class VideoCapturerFactory implements CapturerFactoryInterface
         return new VideoCapturer(
             $this->logger,
             $session,
-            $fifo,
-            $this->bufferClass
+            $fifo
         );
     }
 }
