@@ -1,4 +1,4 @@
-# HDMpI
+# HdmPi
 
 [![Build Status](https://github.com/asmblah/hdmpi/workflows/CI/badge.svg)](https://github.com/asmblah/hdmpi/actions?query=workflow%3ACI)
 
