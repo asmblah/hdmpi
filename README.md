@@ -36,8 +36,8 @@ nc -l 5010 | ffmpeg -i - -map 0:0 -an -c:v mjpeg -f data video.mjpeg.raw \
 ```
 
 ## See also
-- [PiKVM]()
-- [Lenkeng373]()
+- [PiKVM][]
+- [Lenkeng373][]
 
 [Lenkeng373]: https://github.com/toru173/Lenkeng373
 [PiKVM]: https://pikvm.org/
