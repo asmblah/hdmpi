@@ -1,0 +1,23 @@
+{
+    "name": "asmblah/hdmpi",
+    "description": "KVM & HDMI capture with TypeScript and PHP using Uniter",
+    "autoload": {
+        "psr-4": {
+            "Asmblah\\Hdmpi\\": "php/src/"
+        }
+    },
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^4.6"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dan Phillimore",
+            "email": "dan@ovms.co"
+        }
+    ],
+    "platform": {
+        "php": "5.6.0"
+    }
+}
