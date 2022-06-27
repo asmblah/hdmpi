@@ -63,10 +63,9 @@ class CapturerFactory
      * Creates a capturer from the given spec.
      *
      * @param CapturerSpecInterface $capturerSpec
-     * @param int $receiveBufferSizeBytes
      * @return CapturerInterface
      */
-    public function createCapturer(CapturerSpecInterface $capturerSpec, $receiveBufferSizeBytes)
+    public function createCapturer(CapturerSpecInterface $capturerSpec)
     {
         $nativeUdp4Socket = ($this->createSocket)('udp4');
 
@@ -75,9 +74,7 @@ class CapturerFactory
             $nativeUdp4Socket,
             $capturerSpec->getLocalHost(),
             $capturerSpec->getMulticastGroup(),
-            $capturerSpec->getPort(),
-            $capturerSpec->getMaxMessageBacklog(),
-            $receiveBufferSizeBytes
+            $capturerSpec->getPort()
         );
 
         $specFqcn = $capturerSpec::class;

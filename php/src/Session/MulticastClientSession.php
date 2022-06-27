@@ -29,10 +29,6 @@ class MulticastClientSession implements SessionInterface
      */
     private $logger;
     /**
-     * @var int
-     */
-    private $maxMessageBacklog;
-    /**
      * @var string
      */
     private $multicastGroup;
@@ -44,10 +40,6 @@ class MulticastClientSession implements SessionInterface
      * @var int
      */
     private $port;
-    /**
-     * @var int
-     */
-    private $receiveBufferSizeBytes;
 
     /**
      * @param LoggerInterface $logger
@@ -55,25 +47,19 @@ class MulticastClientSession implements SessionInterface
      * @param string $localHost
      * @param string $multicastGroup
      * @param int $port
-     * @param int $maxMessageBacklog
-     * @param int $receiveBufferSizeBytes
      */
     public function __construct(
         LoggerInterface $logger,
         $nativeUdp4Socket,
         $localHost,
         $multicastGroup,
-        $port,
-        $maxMessageBacklog,
-        $receiveBufferSizeBytes
+        $port
     ) {
         $this->localHost = $localHost;
         $this->logger = $logger;
-        $this->maxMessageBacklog = $maxMessageBacklog;
         $this->multicastGroup = $multicastGroup;
         $this->nativeUdp4Socket = $nativeUdp4Socket;
         $this->port = $port;
-        $this->receiveBufferSizeBytes = $receiveBufferSizeBytes;
     }
 
     /**

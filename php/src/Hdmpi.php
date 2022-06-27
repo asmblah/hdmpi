@@ -36,33 +36,45 @@ class Hdmpi
         $this->capturerFactory = $capturerFactory;
     }
 
+    /**
+     * Creates a new audio processing server.
+     *
+     * @param string $localHost
+     * @param string $multicastGroup
+     * @param int $audioPort
+     * @param string $audioFifoPath
+     * @return Server
+     */
     public function createAudioServer(
         $localHost,
         $multicastGroup,
         $audioPort,
-        $audioFifoPath,
-        $maxMessageBacklog,
-        $receiveBufferSizeBytes
+        $audioFifoPath
     ) {
         $audioCapturer = $this->capturerFactory->createCapturer(
-            new AudioCapturerSpec($localHost, $multicastGroup, $audioPort, $audioFifoPath, $maxMessageBacklog),
-            $receiveBufferSizeBytes
+            new AudioCapturerSpec($localHost, $multicastGroup, $audioPort, $audioFifoPath)
         );
 
         return new Server([$audioCapturer]);
     }
 
+    /**
+     * Creates a new video processing server.
+     *
+     * @param string $localHost
+     * @param string $multicastGroup
+     * @param int $videoPort
+     * @param string $videoFifoPath
+     * @return Server
+     */
     public function createVideoServer(
         $localHost,
         $multicastGroup,
         $videoPort,
-        $videoFifoPath,
-        $maxMessageBacklog,
-        $receiveBufferSizeBytes
+        $videoFifoPath
     ) {
         $videoCapturer = $this->capturerFactory->createCapturer(
-            new VideoCapturerSpec($localHost, $multicastGroup, $videoPort, $videoFifoPath, $maxMessageBacklog),
-            $receiveBufferSizeBytes
+            new VideoCapturerSpec($localHost, $multicastGroup, $videoPort, $videoFifoPath)
         );
 
         return new Server([$videoCapturer]);

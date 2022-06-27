@@ -29,11 +29,6 @@ interface CapturerSpecInterface
     public function getLocalHost();
 
     /**
-     * @return int
-     */
-    public function getMaxMessageBacklog();
-
-    /**
      * @return string
      */
     public function getMulticastGroup();

@@ -21,8 +21,6 @@ import '../src/comlinkSetup';
     const videoFifoPath = '/tmp/hdmpi_video_fifo';
     const audioPort = 2066;
     const audioFifoPath = '/tmp/hdmpi_audio_fifo';
-    const maxMessageBacklog = 32; //256;
-    const receiveBufferSizeBytes = 20 * 1024 * 1024;
 
     const createWorker = () => {
         return wrap(nodeEndpoint(new Worker(__dirname + '/../src/worker.js')));
@@ -31,26 +29,12 @@ import '../src/comlinkSetup';
     const videoWorker = createWorker();
     const videoServer = await (
         await videoWorker.createHdmpi()
-    ).createVideoServer(
-        localHost,
-        multicastGroup,
-        videoPort,
-        videoFifoPath,
-        maxMessageBacklog,
-        receiveBufferSizeBytes
-    );
+    ).createVideoServer(localHost, multicastGroup, videoPort, videoFifoPath);
 
     const audioWorker = createWorker();
     const audioServer = await (
         await audioWorker.createHdmpi()
-    ).createAudioServer(
-        localHost,
-        multicastGroup,
-        audioPort,
-        audioFifoPath,
-        maxMessageBacklog,
-        receiveBufferSizeBytes
-    );
+    ).createAudioServer(localHost, multicastGroup, audioPort, audioFifoPath);
 
     console.log('Server starting...');
 

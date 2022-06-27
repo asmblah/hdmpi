@@ -27,10 +27,6 @@ class AudioCapturerSpec implements CapturerSpecInterface
      */
     private $localHost;
     /**
-     * @var int
-     */
-    private $maxMessageBacklog;
-    /**
      * @var string
      */
     private $multicastGroup;
@@ -44,13 +40,11 @@ class AudioCapturerSpec implements CapturerSpecInterface
      * @param string $multicastGroup
      * @param int $port
      * @param string $fifoPath
-     * @param int $maxMessageBacklog
      */
-    public function __construct($localHost, $multicastGroup, $port, $fifoPath, $maxMessageBacklog)
+    public function __construct($localHost, $multicastGroup, $port, $fifoPath)
     {
         $this->fifoPath = $fifoPath;
         $this->localHost = $localHost;
-        $this->maxMessageBacklog = $maxMessageBacklog;
         $this->multicastGroup = $multicastGroup;
         $this->port = $port;
     }
@@ -69,14 +63,6 @@ class AudioCapturerSpec implements CapturerSpecInterface
     public function getLocalHost()
     {
         return $this->localHost;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getMaxMessageBacklog()
-    {
-        return $this->maxMessageBacklog;
     }
 
     /**
