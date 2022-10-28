@@ -9,14 +9,14 @@
  * https://github.com/asmblah/hdmpi/raw/master/MIT-LICENSE.txt
  */
 
-namespace Asmblah\Hdmpi\Capturer\Spec;
+namespace Asmblah\Hdmpi\Worker\Server\Spec;
 
 /**
  * Class VideoCapturerSpec.
  *
  * @author Dan Phillimore <dan@ovms.co>
  */
-class VideoCapturerSpec implements CapturerSpecInterface
+class VideoCapturerSpec implements AvSpecInterface
 {
     /**
      * @var string
@@ -33,20 +33,26 @@ class VideoCapturerSpec implements CapturerSpecInterface
     /**
      * @var int
      */
-    private $port;
+    private $videoPort;
+    /**
+     * @var int
+     */
+    private $videoSyncPort;
 
     /**
      * @param string $localHost
      * @param string $multicastGroup
-     * @param int $port
+     * @param int $videoPort
+     * @param int $videoSyncPort
      * @param string $fifoPath
      */
-    public function __construct($localHost, $multicastGroup, $port, $fifoPath)
+    public function __construct($localHost, $multicastGroup, $videoPort, $videoSyncPort, $fifoPath)
     {
         $this->fifoPath = $fifoPath;
         $this->localHost = $localHost;
         $this->multicastGroup = $multicastGroup;
-        $this->port = $port;
+        $this->videoPort = $videoPort;
+        $this->videoSyncPort = $videoSyncPort;
     }
 
     /**
@@ -76,8 +82,24 @@ class VideoCapturerSpec implements CapturerSpecInterface
     /**
      * @inheritDoc
      */
-    public function getPort()
+    public function getName()
     {
-        return $this->port;
+        return 'Server video capturer';
+    }
+
+    /**
+     * @return int
+     */
+    public function getVideoPort()
+    {
+        return $this->videoPort;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVideoSyncPort()
+    {
+        return $this->videoSyncPort;
     }
 }

@@ -9,16 +9,16 @@
  * https://github.com/asmblah/hdmpi/raw/master/MIT-LICENSE.txt
  */
 
-namespace Asmblah\Hdmpi\Server;
+namespace Asmblah\Hdmpi\Client;
 
 use Asmblah\Hdmpi\Worker\WorkerInterface;
 
 /**
- * Class Server.
+ * Class Client.
  *
  * @author Dan Phillimore <dan@ovms.co>
  */
-class Server
+class Client
 {
     /**
      * @var WorkerInterface[]
@@ -34,7 +34,7 @@ class Server
     }
 
     /**
-     * Starts all workers for this server.
+     * Starts all workers for this client.
      */
     public function start()
     {

@@ -19,9 +19,28 @@ namespace Asmblah\Hdmpi\Session;
 interface SessionInterface
 {
     /**
-     * Starts capturing packets for this session.
+     * Starts capturing datagrams for this session.
      *
-     * @param callable $onPacket
+     * @param callable $onDatagram
      */
-    public function capture(callable $onPacket);
+    public function capture(callable $onDatagram);
+
+    /**
+     * Fetches the port.
+     *
+     * @return int
+     */
+    public function getPort();
+
+    /**
+     * Sends a datagram for this session.
+     *
+     * @param object $datagram
+     */
+    public function send($datagram);
+
+    /**
+     * Starts the session.
+     */
+    public function start();
 }

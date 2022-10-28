@@ -9,27 +9,28 @@
  * https://github.com/asmblah/hdmpi/raw/master/MIT-LICENSE.txt
  */
 
-import nodeEndpoint from 'comlink/dist/umd/node-adapter';
-import { Worker } from 'node:worker_threads';
-import { wrap } from 'comlink';
 import '../src/comlinkSetup';
+import { createWorker } from '../src/control';
 
 (async () => {
     const localHost = '192.168.168.1';
     const multicastGroup = '226.2.2.2';
     const videoPort = 2068;
-    const videoFifoPath = '/tmp/hdmpi_video_fifo';
+    const videoSyncPort = 2067;
+    const videoFifoPath = '/var/run/hdmpi_video_fifo';
     const audioPort = 2066;
-    const audioFifoPath = '/tmp/hdmpi_audio_fifo';
-
-    const createWorker = () => {
-        return wrap(nodeEndpoint(new Worker(__dirname + '/../src/worker.js')));
-    };
+    const audioFifoPath = '/var/run/hdmpi_audio_fifo';
 
     const videoWorker = createWorker();
     const videoServer = await (
         await videoWorker.createHdmpi()
-    ).createVideoServer(localHost, multicastGroup, videoPort, videoFifoPath);
+    ).createVideoServer(
+        localHost,
+        multicastGroup,
+        videoPort,
+        videoSyncPort,
+        videoFifoPath
+    );
 
     const audioWorker = createWorker();
     const audioServer = await (

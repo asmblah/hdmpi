@@ -9,14 +9,16 @@
  * https://github.com/asmblah/hdmpi/raw/master/MIT-LICENSE.txt
  */
 
-namespace Asmblah\Hdmpi\Capturer\Spec;
+namespace Asmblah\Hdmpi\Worker\Server\Spec;
+
+use Asmblah\Hdmpi\Worker\Spec\WorkerSpecInterface;
 
 /**
- * Interface CapturerSpecInterface.
+ * Interface AvSpecInterface.
  *
  * @author Dan Phillimore <dan@ovms.co>
  */
-interface CapturerSpecInterface
+interface AvSpecInterface extends WorkerSpecInterface
 {
     /**
      * @return string
@@ -32,9 +34,4 @@ interface CapturerSpecInterface
      * @return string
      */
     public function getMulticastGroup();
-
-    /**
-     * @return int
-     */
-    public function getPort();
 }

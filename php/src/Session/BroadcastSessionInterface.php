@@ -9,14 +9,13 @@
  * https://github.com/asmblah/hdmpi/raw/master/MIT-LICENSE.txt
  */
 
-namespace Asmblah\Hdmpi\Capturer;
+namespace Asmblah\Hdmpi\Session;
 
 /**
- * Interface CapturerInterface.
+ * Interface BroadcastSessionInterface.
  *
  * @author Dan Phillimore <dan@ovms.co>
  */
-interface CapturerInterface
+interface BroadcastSessionInterface extends SessionInterface
 {
-    public function capture();
 }

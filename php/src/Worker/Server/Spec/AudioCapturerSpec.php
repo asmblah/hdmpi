@@ -9,14 +9,14 @@
  * https://github.com/asmblah/hdmpi/raw/master/MIT-LICENSE.txt
  */
 
-namespace Asmblah\Hdmpi\Capturer\Spec;
+namespace Asmblah\Hdmpi\Worker\Server\Spec;
 
 /**
  * Class AudioCapturerSpec.
  *
  * @author Dan Phillimore <dan@ovms.co>
  */
-class AudioCapturerSpec implements CapturerSpecInterface
+class AudioCapturerSpec implements AvSpecInterface
 {
     /**
      * @var string
@@ -68,13 +68,21 @@ class AudioCapturerSpec implements CapturerSpecInterface
     /**
      * @inheritDoc
      */
+    public function getName()
+    {
+        return 'Server audio capturer';
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getMulticastGroup()
     {
         return $this->multicastGroup;
     }
 
     /**
-     * @inheritDoc
+     * @return int
      */
     public function getPort()
     {

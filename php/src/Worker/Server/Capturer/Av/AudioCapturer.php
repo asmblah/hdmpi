@@ -9,26 +9,26 @@
  * https://github.com/asmblah/hdmpi/raw/master/MIT-LICENSE.txt
  */
 
-namespace Asmblah\Hdmpi\Capturer\Video;
+namespace Asmblah\Hdmpi\Worker\Server\Capturer\Av;
 
-use Asmblah\Hdmpi\Capturer\CapturerInterface;
-use Asmblah\Hdmpi\Fifo;
+use Asmblah\Hdmpi\Io\FifoInterface;
 use Asmblah\Hdmpi\Logger\LoggerInterface;
 use Asmblah\Hdmpi\Session\SessionInterface;
+use Asmblah\Hdmpi\Worker\WorkerInterface;
 
 /**
  * Class AudioCapturer.
  *
  * @author Dan Phillimore <dan@ovms.co>
  */
-class AudioCapturer implements CapturerInterface
+class AudioCapturer implements WorkerInterface
 {
     /**
      * @var object
      */
     private $bufferClass;
     /**
-     * @var Fifo
+     * @var FifoInterface
      */
     private $fifo;
     /**
@@ -43,27 +43,33 @@ class AudioCapturer implements CapturerInterface
     /**
      * @param LoggerInterface $logger
      * @param SessionInterface $session
-     * @param Fifo $fifo
+     * @param FifoInterface $fifo
      * @param object $bufferClass
      */
-    public function __construct(LoggerInterface $logger, SessionInterface $session, Fifo $fifo, $bufferClass)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        SessionInterface $session,
+        FifoInterface $fifo,
+        $bufferClass
+    ) {
         $this->bufferClass = $bufferClass;
         $this->fifo = $fifo;
         $this->logger = $logger;
         $this->session = $session;
     }
 
-    public function capture()
+    public function start()
     {
-        $this->logger->debug('Starting audio capture');
+        $this->logger->debug('Starting server audio capture');
 
         $audioBuffer = $this->bufferClass->alloc(992, 0);
 
         $this->session->capture(function ($message) use ($audioBuffer) {
             $message->copy($audioBuffer, 0, 16);
 
-            $this->fifo->writeChunk($audioBuffer);
+            $this->fifo->writeChunk($this->bufferClass->from($audioBuffer));
         });
+
+        $this->session->start();
     }
 }

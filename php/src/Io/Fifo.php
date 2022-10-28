@@ -9,8 +9,9 @@
  * https://github.com/asmblah/hdmpi/raw/master/MIT-LICENSE.txt
  */
 
-namespace Asmblah\Hdmpi;
+namespace Asmblah\Hdmpi\Io;
 
+use Asmblah\Hdmpi\Frame;
 use Asmblah\Hdmpi\Logger\LoggerInterface;
 
 /**
@@ -18,7 +19,7 @@ use Asmblah\Hdmpi\Logger\LoggerInterface;
  *
  * @author Dan Phillimore <dan@ovms.co>
  */
-class Fifo
+class Fifo implements FifoInterface
 {
     /**
      * @var object
@@ -29,13 +30,17 @@ class Fifo
      */
     private $logger;
     /**
+     * @var callable|null
+     */
+    private $onChunkCallback;
+    /**
      * @var callable
      */
     private $openStream;
     /**
      * @var object
      */
-    private $writeStream;
+    private $stream;
     /**
      * @var callable
      */
@@ -62,15 +67,39 @@ class Fifo
     }
 
     /**
-     * Opens a WritableStream to the FIFO.
+     * @inheritDoc
+     */
+    public function onChunk(callable $callback)
+    {
+        $this->onChunkCallback = $callback;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function pause()
+    {
+        $this->stream->pause();
+    }
+
+    /**
+     * @inheritDoc
      */
     public function reopenStream()
     {
         $fifo = $this;
         $logger = $this->logger;
-        $this->writeStream = ($this->openStream)();
+        $this->stream = ($this->openStream)();
 
-        $this->writeStream->on('error', function ($error) use ($fifo, $logger) {
+        $onChunkCallback =& $this->onChunkCallback;
+
+        $this->stream->on('data', function ($chunk) use (&$onChunkCallback) {
+            if ($onChunkCallback) {
+                $onChunkCallback($chunk);
+            }
+        });
+
+        $this->stream->on('error', function ($error) use ($fifo, $logger) {
             $logger->error($error->message);
 
             // Reopen pipe on "[ERROR] EPIPE: broken pipe, write"
@@ -80,19 +109,23 @@ class Fifo
     }
 
     /**
-     * Writes the given chunk to the FIFO.
-     *
-     * @param object $chunk
+     * @inheritDoc
      */
-    public function writeChunk($chunk)
+    public function resume()
     {
-        ($this->writeToWriteStream)($this->writeStream, $chunk);
+        $this->stream->resume();
     }
 
     /**
-     * Writes the given frame to the FIFO.
-     *
-     * @param Frame $frame
+     * @inheritDoc
+     */
+    public function writeChunk($chunk)
+    {
+        ($this->writeToWriteStream)($this->stream, $chunk);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function writeFrame(Frame $frame)
     {
@@ -100,6 +133,6 @@ class Fifo
 
         $frameBuffer = $this->bufferClass->concat($chunks);
 
-        ($this->writeToWriteStream)($this->writeStream, $frameBuffer);
+        ($this->writeToWriteStream)($this->stream, $frameBuffer);
     }
 }
